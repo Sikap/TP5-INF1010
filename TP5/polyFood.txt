@@ -1,0 +1,32 @@
+-MATIN
+Soupe 3 10 5 1.5 2 3 1
+Oeuf 1 12 4.5 2.3
+Pain 2 5 2 6 7 2
+Crepes 2 6 2 9 8 1
+Gratin 0 23 8
+Pancakes 0 7 2
+Homous 3 8 3 0.8 1 2 3
+-MIDI
+Poulet 0 10 6
+Nachos 3 12 4.5 2.3 2 3 1
+Boeuf 0 5 3
+Burrito 0 23 10
+Quesadillas 2 7 2 8 6 8
+Ratatouille 1 8 3 0.8 
+-SOIR
+Pates 0 30 9
+Poisson 1 60 20 9
+Poulet 1 20 8 1.8 
+Muffin 3 5 2 1 9 9 1
+Pizza 2 7 2 8 6 8
+-TABLES
+1 6
+2 4
+3 6
+4 2
+5 0
+6 3
+-ADDRESSES
+0 3.5
+1 4
+2 5.5
