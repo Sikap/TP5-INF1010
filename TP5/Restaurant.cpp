@@ -98,11 +98,11 @@ ostream& operator<<(ostream& os, const Restaurant& restaurent)
 	for (GestionnaireTables* table : restaurent.tables_)
 		table->afficherTables(os);
 	    os << endl;
-
+		
 	os << "-Voici son menu : " << endl;
 	for (TypeMenu typeMenu : { TypeMenu::Matin, TypeMenu::Midi, TypeMenu::Soir }) {
 		GestionnairePlats* menu = restaurent.getMenu(typeMenu);
-		os<< getNomTypeMenu(typeMenu) << " : " << endl;
+		//os<< getNomTypeMenu(typeMenu) << " : " << endl;
 			menu->afficherPlats(os) ;
 			os << "Le plat le moins cher est : ";
 		menu->trouverPlatMoinsCher()->afficherPlat(os);
