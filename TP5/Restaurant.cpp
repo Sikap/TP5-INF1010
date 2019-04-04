@@ -86,11 +86,11 @@ TypeMenu Restaurant::getMoment() const
 void Restaurant::libererTable(int id)
 {
 	
-	if (Table* table = getTable(id)) {
-		chiffreAffaire_ += table->getChiffreAffaire();
-		chiffreAffaire_ += calculerReduction(table->getClientPrincipal(), table->getChiffreAffaire(), id == tables_->getTable(INDEX_TABLE_LIVRAISON)->getId());
-		table->libererTable();
-	}
+	Table* table = getTable(id);
+	chiffreAffaire_ += table->getChiffreAffaire();
+	chiffreAffaire_ += calculerReduction(table->getClientPrincipal(), table->getChiffreAffaire(), id == ID_TABLE_LIVRAISON);
+	table->libererTable();
+	
 }
 
 ostream& operator<<(ostream& os, const Restaurant& restaurent)
@@ -143,6 +143,7 @@ bool Restaurant::placerClients(Client* client)
 	//TODO : Si possible assigner la table au client sinon retourner false.
 	if (tables_->getMeilleureTable(tailleGroupe) == nullptr) { return false; }
 	tables_->getMeilleureTable(tailleGroupe)->setClientPrincipal(client);
+	client->setTable(tables_->getMeilleureTable(tailleGroupe));
 	return true;
 }
 
