@@ -10,26 +10,26 @@
 
 Table * GestionnaireTables::getTable(int id) const
 {
-	set<Table*> T = getConteneur();
-	for (auto it = T.begin(); it != T.end(); it++) {
+
+	for (auto it = conteneur_.begin(); it != conteneur_.end(); it++) {
 		if ((*it)->getId() == id)
 			return *it;
-		else return nullptr;
 	}
+	return nullptr;
 }
 Table * GestionnaireTables::getMeilleureTable(int tailleGroupe) const
 {
 	set<Table*>::iterator it = conteneur_.begin();
-	int min = (*it)->getNbPlaces() - tailleGroupe;
+	int  minNouveau = tailleGroupe;
+	int   minPrecedent=1000;
 	for (it; it != conteneur_.end(); it++) {
-		if (min == 0) {
-			return (*it);
-		}
-		else if ((*it)->getNbPlaces() - tailleGroupe < min) {
-			min = (*it)->getNbPlaces() - tailleGroupe;
+		if ((*it)->getNbPlaces() == tailleGroupe) { return *(it); }
+		if ((*it)->getNbPlaces() > tailleGroupe ) { 
+			minNouveau = (*it)->getNbPlaces();
+		   if (minNouveau < minPrecedent) { minPrecedent = minNouveau; }
 		}
 	}
-	return *it;
+	return getTable(minPrecedent);
 }
 
 void GestionnaireTables::lireTables(const string& nomFichier)

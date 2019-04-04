@@ -13,6 +13,11 @@ using namespace std;
 Restaurant::Restaurant() :
 	Restaurant{ "menu.txt", "Inconnu", TypeMenu::Matin }
 {
+	menuMatin_ = new GestionnairePlats("menu.txt", TypeMenu::Matin);
+	tables_= new GestionnaireTables();
+	tables_->lireTables("menu.txt");
+
+	
 }
 
 Restaurant::Restaurant(const string& nomFichier, string_view nom, TypeMenu moment) :
@@ -24,8 +29,11 @@ Restaurant::Restaurant(const string& nomFichier, string_view nom, TypeMenu momen
 	menuMatin_ = new GestionnairePlats(nomFichier, moment);
 	menuMidi_= new GestionnairePlats(nomFichier, moment);
 	menuSoir_= new GestionnairePlats(nomFichier, moment);
+	tables_ = new GestionnaireTables();
+	tables_->lireTables(nomFichier);
 	menuActuel();
 	lireAdresses(nomFichier);
+	
 }
 
 // Destructeur.
@@ -34,7 +42,7 @@ Restaurant::~Restaurant()
 	delete menuMatin_;
 	delete menuMidi_;
 	delete menuSoir_;
-	for (GestionnaireTables* table : tables_)
+	for (Table* table : tables_->getConteneur())
 		delete table;
 }
 
@@ -78,10 +86,10 @@ TypeMenu Restaurant::getMoment() const
 void Restaurant::libererTable(int id)
 {
 	
-	if (GestionnaireTables* table = getTable(id)) {
-		chiffreAffaire_ += table->getTable(id)->getChiffreAffaire();
-		chiffreAffaire_ += calculerReduction(table->getTable(id)->getClientPrincipal(), table->getTable(id)->getChiffreAffaire(), id == tables_->getTable(INDEX_TABLE_LIVRAISON)->getId());
-		table->getTable(id)->libererTable();
+	if (Table* table = getTable(id)) {
+		chiffreAffaire_ += table->getChiffreAffaire();
+		chiffreAffaire_ += calculerReduction(table->getClientPrincipal(), table->getChiffreAffaire(), id == tables_->getTable(INDEX_TABLE_LIVRAISON)->getId());
+		table->libererTable();
 	}
 }
 
@@ -95,8 +103,8 @@ ostream& operator<<(ostream& os, const Restaurant& restaurent)
 
 	os << "-Voici les tables : " << endl;
 
-	for (GestionnaireTables* table : restaurent.tables_)
-		table->afficherTables(os);
+	for (Table* table : restaurent.tables_->getConteneur())
+		os << table;
 	    os << endl;
 		
 	os << "-Voici son menu : " << endl;
@@ -113,7 +121,7 @@ ostream& operator<<(ostream& os, const Restaurant& restaurent)
 
 void Restaurant::commanderPlat(string_view nom, int idTable)
 {
-	if (Table* table = getTable(idTable)->getTable(idTable); table && table->estOccupee())
+	if (Table* table = getTable(idTable); table && table->estOccupee())
 			
 		if (Plat* plat = menuActuel()->trouverPlat(std::string(nom).c_str())) {
 			table->commander(plat);
@@ -133,8 +141,8 @@ bool Restaurant::placerClients(Client* client)
 	//TODO : trouver la table la plus adaptée pour le client. 
 	tables_->getMeilleureTable(tailleGroupe);
 	//TODO : Si possible assigner la table au client sinon retourner false.
-	client->setTable(tables_->getMeilleureTable(tailleGroupe));
 	if (tables_->getMeilleureTable(tailleGroupe) == nullptr) { return false; }
+	tables_->getMeilleureTable(tailleGroupe)->setClientPrincipal(client);
 	return true;
 }
 
@@ -185,9 +193,10 @@ GestionnairePlats* Restaurant::menuActuel() const
 	return getMenu(momentJournee_);
 }
 
-GestionnaireTables* Restaurant::getTable(int id) const
+Table* Restaurant::getTable(int id) const
 {
-	return tables_.find(id);
+
+	return tables_->getTable(id);
 
 }
 
