@@ -61,6 +61,7 @@ void GestionnairePlats::afficherPlats(ostream & os)
 GestionnairePlats::GestionnairePlats(const string & nomFichier, TypeMenu type):type_(type)
 {
 	lirePlats(nomFichier,type);
+	
 }
 
 GestionnairePlats::GestionnairePlats(GestionnairePlats * gestionnaire)

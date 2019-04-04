@@ -80,7 +80,7 @@ private:
 	
 	// Liste des tables.
 	// TODO: Retirer ce vecteur et utiliser un GestionnaireTables à la place.
-	vector<owner<GestionnaireTables*>> tables_;  //? "owner" est juste un indicateur que la classe est propri�taire des tables (et devra faire un "delete"), mais owner<Table*> est �quivalent � Table*; voir pointers.h .
+	owner < GestionnaireTables*>tables_;  //? "owner" est juste un indicateur que la classe est propri�taire des tables (et devra faire un "delete"), mais owner<Table*> est �quivalent � Table*; voir pointers.h .
 
 	// Tarif des trois zones de livraison.
 	double fraisLivraison_[NB_ZONES_LIVR]; 
