@@ -33,10 +33,12 @@ string Client::getPrenom() const
 void Client::setTable(Table * table)
 {
 	tableOccupee_ = table;
+	
 }
 
 Table * Client::getTable() const
 {
+	
 	return tableOccupee_;
 }
 

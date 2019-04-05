@@ -18,7 +18,7 @@ Table::Table(int id, int nbPlaces) :
 
 // Getters.
 int Table::getId() const
-{
+ {
 	return id_;
 }
 

@@ -16,7 +16,7 @@ Restaurant::Restaurant() :
 	menuMatin_ = new GestionnairePlats("menu.txt", TypeMenu::Matin);
 	tables_= new GestionnaireTables();
 	tables_->lireTables("menu.txt");
-
+	
 	
 }
 
@@ -26,12 +26,12 @@ Restaurant::Restaurant(const string& nomFichier, string_view nom, TypeMenu momen
 	chiffreAffaire_{ 0 },
 	fraisLivraison_{}
 {
-	menuMatin_ = new GestionnairePlats(nomFichier, moment);
-	menuMidi_= new GestionnairePlats(nomFichier, moment);
-	menuSoir_= new GestionnairePlats(nomFichier, moment);
+	menuMatin_ = new GestionnairePlats(nomFichier, TypeMenu::Matin);
+	menuMidi_= new GestionnairePlats(nomFichier, TypeMenu::Midi);
+	menuSoir_= new GestionnairePlats(nomFichier, TypeMenu::Soir);
 	tables_ = new GestionnaireTables();
 	tables_->lireTables(nomFichier);
-	menuActuel();
+	menuActuel()->lirePlats(nomFichier, moment);
 	lireAdresses(nomFichier);
 	
 }
@@ -85,11 +85,10 @@ TypeMenu Restaurant::getMoment() const
 
 void Restaurant::libererTable(int id)
 {
-	
-	Table* table = getTable(id);
-	chiffreAffaire_ += table->getChiffreAffaire();
-	chiffreAffaire_ += calculerReduction(table->getClientPrincipal(), table->getChiffreAffaire(), id == ID_TABLE_LIVRAISON);
-	table->libererTable();
+	Table* t = tables_->getTable(id);
+	chiffreAffaire_ += t->getChiffreAffaire();
+	chiffreAffaire_ += calculerReduction(t->getClientPrincipal(), t->getChiffreAffaire(), id == ID_TABLE_LIVRAISON);
+	t->libererTable();
 	
 }
 
@@ -122,7 +121,7 @@ ostream& operator<<(ostream& os, const Restaurant& restaurent)
 void Restaurant::commanderPlat(string_view nom, int idTable)
 {
 	if (Table* table = getTable(idTable); table && table->estOccupee())
-			
+	
 		if (Plat* plat = menuActuel()->trouverPlat(std::string(nom).c_str())) {
 			table->commander(plat);
 			return;
@@ -139,11 +138,13 @@ bool Restaurant::placerClients(Client* client)
 {
 	const int tailleGroupe = client->getTailleGroupe();
 	//TODO : trouver la table la plus adaptée pour le client. 
-	tables_->getMeilleureTable(tailleGroupe);
+	Table* MeilleureTable = tables_->getMeilleureTable(tailleGroupe);
 	//TODO : Si possible assigner la table au client sinon retourner false.
-	if (tables_->getMeilleureTable(tailleGroupe) == nullptr) { return false; }
-	tables_->getMeilleureTable(tailleGroupe)->setClientPrincipal(client);
-	client->setTable(tables_->getMeilleureTable(tailleGroupe));
+	if (MeilleureTable == nullptr) { return false; }
+	client->setTable(MeilleureTable);
+	MeilleureTable->setClientPrincipal(client);
+	MeilleureTable->placerClients(tailleGroupe);
+
 	return true;
 }
 
@@ -152,9 +153,10 @@ bool Restaurant::livrerClient(Client* client, const vector<string>& commande)
 	if (dynamic_cast<ClientPrestige*>(client)) {
 		// TODO: Placer le client principal a la table fictive en utilisant la classe GestionnaireTables.
 		tables_->getTable(INDEX_TABLE_LIVRAISON)->setClientPrincipal(client);
+		client->setTable(tables_->getTable(INDEX_TABLE_LIVRAISON));
 		// tables_[INDEX_TABLE_LIVRAISON]->setClientPrincipal(client); // L'appel du TP4
 		// TODO: Placer client à la table fictive en utilisant la classe GestionnaireTables.
-		tables_->getTable(INDEX_TABLE_LIVRAISON)->placerClients(client->getTailleGroupe());
+		tables_->getTable(INDEX_TABLE_LIVRAISON)->placerClients(1);
 		// tables_[INDEX_TABLE_LIVRAISON]->placerClients(1); // L'appel du TP4
 		// Placer la commande
 		for (unsigned int i = 0; i < commande.size(); i++)

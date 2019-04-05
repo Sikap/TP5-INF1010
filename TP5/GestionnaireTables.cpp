@@ -21,15 +21,19 @@ Table * GestionnaireTables::getMeilleureTable(int tailleGroupe) const
 {
 	set<Table*>::iterator it = conteneur_.begin();
 	int  minNouveau = tailleGroupe;
-	int   minPrecedent=1000;
+	int   min=1000;
+	Table* Tmin = new Table();
 	for (it; it != conteneur_.end(); it++) {
-		if ((*it)->getNbPlaces() == tailleGroupe) { return *(it); }
-		if ((*it)->getNbPlaces() > tailleGroupe ) { 
-			minNouveau = (*it)->getNbPlaces();
-		   if (minNouveau < minPrecedent) { minPrecedent = minNouveau; }
+		if (!(*it)->estOccupee()&& (*it)->getId()!= ID_TABLE_LIVRAISON) {
+			if ((*it)->getNbPlaces() == tailleGroupe) { return *(it); }
+			if ((*it)->getNbPlaces() > tailleGroupe) {
+				minNouveau = (*it)->getNbPlaces();
+				if (minNouveau < min) { min = minNouveau; Tmin = getTable((*it)->getId()); }
+			}
 		}
 	}
-	return getTable(minPrecedent);
+	
+	return Tmin;
 }
 
 void GestionnaireTables::lireTables(const string& nomFichier)
