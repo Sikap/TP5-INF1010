@@ -8,32 +8,31 @@
 #include "GestionnaireTables.h"
 #include "LectureFichierEnSections.h"
 
+
 Table * GestionnaireTables::getTable(int id) const
 {
 
-	for (auto it = conteneur_.begin(); it != conteneur_.end(); it++) {
+	/*for (auto it = conteneur_.begin(); it != conteneur_.end(); it++) {
 		if ((*it)->getId() == id)
 			return *it;
 	}
-	return nullptr;
+	return nullptr;*/
+	auto cmp_ID = [=](Table*Table) {return (Table->getId() == id); };
+	Table* t= *find_if(conteneur_.begin(), conteneur_.end(), cmp_ID);
+	if (t == nullptr) { return nullptr; }
+	else return t;
 }
 Table * GestionnaireTables::getMeilleureTable(int tailleGroupe) const
 {
-	set<Table*>::iterator it = conteneur_.begin();
-	int  minNouveau = tailleGroupe;
-	int   min=1000;
-	Table* Tmin = new Table();
-	for (it; it != conteneur_.end(); it++) {
-		if (!(*it)->estOccupee()&& (*it)->getId()!= ID_TABLE_LIVRAISON) {
-			if ((*it)->getNbPlaces() == tailleGroupe) { return *(it); }
-			if ((*it)->getNbPlaces() > tailleGroupe) {
-				minNouveau = (*it)->getNbPlaces();
-				if (minNouveau < min) { min = minNouveau; Tmin = getTable((*it)->getId()); }
-			}
-		}
-	}
-	
-	return Tmin;
+	vector<Table*> t;
+	auto sup_Egale_TailleGroupe = [=](Table*Table) {return (Table->getNbPlaces()>= tailleGroupe&& !Table->estOccupee()); };
+	copy_if(conteneur_.begin(), conteneur_.end(), back_inserter(t), sup_Egale_TailleGroupe);
+	if (t.empty()) { return nullptr; }
+
+	auto cmp_NbPlaces = [](Table*Table1, Table*Table2) {return(Table1->getNbPlaces() < Table2->getNbPlaces());};
+	auto min= min_element(t.begin(), t.end(),cmp_NbPlaces);
+
+	return getTable((*min)->getId());
 }
 
 void GestionnaireTables::lireTables(const string& nomFichier)

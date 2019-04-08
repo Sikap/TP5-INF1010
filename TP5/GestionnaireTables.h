@@ -11,6 +11,11 @@
 #include "GestionnaireGenerique.h"
 #include<iterator>
 #include <set>
+#include "algorithm"
+#include<functional>
+using namespace std;
+using namespace std::placeholders;
+
 
 class GestionnaireTables:public GestionnaireGenerique <Table*, set<Table*>>// TODO : Ajouter l'héritage 
 {

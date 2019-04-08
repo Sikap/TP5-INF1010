@@ -152,17 +152,18 @@ bool Restaurant::livrerClient(Client* client, const vector<string>& commande)
 {
 	if (dynamic_cast<ClientPrestige*>(client)) {
 		// TODO: Placer le client principal a la table fictive en utilisant la classe GestionnaireTables.
-		tables_->getTable(INDEX_TABLE_LIVRAISON)->setClientPrincipal(client);
-		client->setTable(tables_->getTable(INDEX_TABLE_LIVRAISON));
+		//tables_->getTable(INDEX_TABLE_LIVRAISON)->setClientPrincipal(client);
+		Table* table = tables_->getTable(ID_TABLE_LIVRAISON);
+		table->setClientPrincipal(client);
 		// tables_[INDEX_TABLE_LIVRAISON]->setClientPrincipal(client); // L'appel du TP4
 		// TODO: Placer client à la table fictive en utilisant la classe GestionnaireTables.
-		tables_->getTable(INDEX_TABLE_LIVRAISON)->placerClients(1);
+		table->placerClients(1);
 		// tables_[INDEX_TABLE_LIVRAISON]->placerClients(1); // L'appel du TP4
 		// Placer la commande
 		for (unsigned int i = 0; i < commande.size(); i++)
 			commanderPlat(commande[i], INDEX_TABLE_LIVRAISON);
 		// Liberer la table fictive.
-		libererTable(INDEX_TABLE_LIVRAISON);
+		libererTable(ID_TABLE_LIVRAISON);
 		return true;
 	}
 	else {
