@@ -12,11 +12,6 @@
 Table * GestionnaireTables::getTable(int id) const
 {
 
-	/*for (auto it = conteneur_.begin(); it != conteneur_.end(); it++) {
-		if ((*it)->getId() == id)
-			return *it;
-	}
-	return nullptr;*/
 	auto cmp_ID = [=](Table*Table) {return (Table->getId() == id); };
 	Table* t= *find_if(conteneur_.begin(), conteneur_.end(), cmp_ID);
 	if (t == nullptr) { return nullptr; }

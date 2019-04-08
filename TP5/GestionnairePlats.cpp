@@ -55,7 +55,7 @@ void GestionnairePlats::afficherPlats(ostream & os)
 	for (auto it = p.begin(); it != p.end(); it++) {
 		 (*it).second->afficherPlat(os);
 	}
-	//copy(conteneur_.begin(), conteneur_.end(), ostream_iterator<pair<string, Plat*>>(os, "\n"));
+    
 }
 
 GestionnairePlats::GestionnairePlats(const string & nomFichier, TypeMenu type):type_(type)

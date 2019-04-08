@@ -46,7 +46,7 @@ public:
 	GestionnaireTables* getTables() const; // TODO : À implémenter
 	GestionnairePlats* getMenu(TypeMenu typeMenu) const; // TODO: retourner un GestionnairePlats* a la place
 	double getFraisLivraison(ZoneHabitation zone) const;
-    string getNomTypeMenu(TypeMenu typeMenu);
+    string getNomTypeMenu(TypeMenu typeMenu)const ;
 
 	// Autres methodes.
 	void lireAdresses(const string& fichier);

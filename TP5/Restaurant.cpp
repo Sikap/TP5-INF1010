@@ -75,11 +75,6 @@ TypeMenu Restaurant::getMoment() const
 	return momentJournee_;
 }
 
-/*double Restaurant::getFraisLivraison(int index) const
-{
-	return fraisLivraison_[index];
-}
-*/
 
 // Autres methodes.
 
@@ -103,21 +98,19 @@ ostream& operator<<(ostream& os, const Restaurant& restaurent)
 	os << "-Voici les tables : " << endl;
 
 	for (Table* table : restaurent.tables_->getConteneur())
-		os << table;
-	    os << endl;
-		
+		os << *table << endl;
+
 	os << "-Voici son menu : " << endl;
 	for (TypeMenu typeMenu : { TypeMenu::Matin, TypeMenu::Midi, TypeMenu::Soir }) {
 		GestionnairePlats* menu = restaurent.getMenu(typeMenu);
-		//os<< getNomTypeMenu(typeMenu) << " : " << endl;
-			menu->afficherPlats(os) ;
-			os << "Le plat le moins cher est : ";
+		os << restaurent.getNomTypeMenu(typeMenu)<< " : " << endl;;
+		menu->afficherPlats(os);
+		os << endl << "Le plat le moins cher est : ";
 		menu->trouverPlatMoinsCher()->afficherPlat(os);
 		os << endl;
 	}
 	return os;
 }
-
 void Restaurant::commanderPlat(string_view nom, int idTable)
 {
 	if (Table* table = getTable(idTable); table && table->estOccupee())
@@ -178,7 +171,11 @@ double Restaurant::calculerReduction(Client* client, double montant, bool estLiv
 
 double Restaurant::getFraisLivraison(ZoneHabitation zone) const
 {
-	return fraisLivraison_[static_cast<int>(zone)];
+	switch (zone) {
+	case ZoneHabitation::Zone1: return 0;
+	case ZoneHabitation::Zone2: return 1;
+	case ZoneHabitation::Zone3: return 2;
+   }
 }
 
 GestionnairePlats* Restaurant::getMenu(TypeMenu typeMenu) const
@@ -226,7 +223,11 @@ GestionnaireTables * Restaurant::getTables() const
 	return tables_;
 }
 
-string Restaurant::getNomTypeMenu(TypeMenu typeMenu)
+string Restaurant::getNomTypeMenu(TypeMenu typeMenu) const
 {
-	return string{ nomsDesTypesDeMenu[static_cast<int>(typeMenu)] };
+	switch(typeMenu) {
+	case TypeMenu::Matin: return "Matin";
+	case TypeMenu::Midi: return "Midi";
+	case TypeMenu::Soir: return "Soir";
+	}
 }
